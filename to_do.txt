@@ -2,4 +2,5 @@ To Do:
 - Implement mean encoded features correctly.
 - Check whether city names are created correctly
 - Check whether appending data works correctly
-- Create submission.
+- Create test/eval/train split
+- Change metric of xgboost
