@@ -2,7 +2,15 @@ import numpy as np
 from xgboost import XGBRegressor
 
 
-xgb = XGBRegressor()
+xgb = XGBRegressor(
+    max_depth=8,
+    n_estimators=50,
+    min_child_weight=290, 
+    colsample_bytree=0.79, 
+    subsample=0.79, 
+    eta=0.3,    
+    seed=42)
+)
 
 y_train = np.load("data/y_train.npy")
 print(y_train.dtype)
