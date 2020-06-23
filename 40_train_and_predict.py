@@ -9,7 +9,7 @@ xgb = XGBRegressor(
     colsample_bytree=0.79, 
     subsample=0.79, 
     eta=0.3,    
-    seed=42)
+    seed=42
 )
 
 y_train = np.load("data/y_train.npy")
