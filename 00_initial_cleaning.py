@@ -66,6 +66,15 @@ test.to_parquet("data/test.parquet")
 # PREPARE SHOPS
 shops = pd.read_csv("data/shops.csv")
 shops = shops.loc[(shops.shop_id != 0) & (shops.shop_id != 1) & (shops.shop_id != 10), :]
+
+# Create City from shop name
+shops.loc[shops.shop_name == 'Сергиев Посад ТЦ "7Я"', 'shop_name'] = 'СергиевПосад ТЦ "7Я"'
+shops['city'] = shops['shop_name'].str.split(' ').map(lambda x: x[0])
+shops.loc[shops.city == '!Якутск', 'city'] = 'Якутск'
+shops['city_code'] = LabelEncoder().fit_transform(shops['city']).astype(np.int16)
+shops = shops[['shop_id','city_code']]
+
+# Extract the name of the city from the beginning of the shops.
 shops.to_parquet("data/shops.parquet")
 
 

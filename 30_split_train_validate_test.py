@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-
+train_start = 2
 train_end = 33
 test_end  = 34
 
@@ -14,10 +14,10 @@ data = pd.read_parquet("data/data.parquet")
 
 target = data.groupby(level=["shop_id", "item_id"])["item_cnt_day_sum"].shift(-1)
 
-data["target"] = target.values
+data["target"] = np.clip(target.values, 0, 20)
 
 # Split train and test based on time.
-train = data.loc[(data.index.get_level_values("date_block_num") <= train_end) & (data.index.get_level_values("date_block_num") >= 3) , :]
+train = data.loc[(data.index.get_level_values("date_block_num") <= train_end) & (data.index.get_level_values("date_block_num") >= train_start) , :]
 test = data.loc[(data.index.get_level_values("date_block_num") > train_end) & (data.index.get_level_values("date_block_num") <= test_end), :]
 
 del data
