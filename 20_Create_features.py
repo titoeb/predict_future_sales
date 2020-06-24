@@ -79,12 +79,15 @@ data = create_mean_encoded_feature(df=data, vars_to_group=['date_block_num', 'sh
 data = create_mean_encoded_feature(df=data, vars_to_group=['date_block_num', 'item_id', 'city_code'], lags_to_create=[1, 2])
 
 # Step 5: temporal features:
-matrix['month'] = matrix['date_block_num'] % 12
+data['month'] = (data['date_block_num'] % 12).astype(np.int8)
 
 days = pd.Series([31,28,31,30,31,30,31,31,30,31,30,31])
-matrix['days'] = matrix['month'].map(days).astype(np.int8)
+data['days'] = data['month'].map(days).astype(np.int8)
 
 print(data.dtypes)
+
+# Set date as index
+data = data.set_index(["date_block_num", "shop_id", "item_id"])
 
 # Store dataset
 data.to_parquet("data/data.parquet")
