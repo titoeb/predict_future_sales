@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 
+from sklearn.preprocessing import LabelEncoder
+
 
 # PREPARE SALES_TRAIN
 # Load the dataset
@@ -73,6 +75,8 @@ shops['city'] = shops['shop_name'].str.split(' ').map(lambda x: x[0])
 shops.loc[shops.city == '!Якутск', 'city'] = 'Якутск'
 shops['city_code'] = LabelEncoder().fit_transform(shops['city']).astype(np.int16)
 shops = shops[['shop_id','city_code']]
+
+print(shops.dtypes)
 
 # Extract the name of the city from the beginning of the shops.
 shops.to_parquet("data/shops.parquet")

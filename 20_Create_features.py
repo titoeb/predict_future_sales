@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from helpers import create_mean_encoded_feature
 
 
 # Load the dataset
@@ -24,9 +25,7 @@ data = pd.merge(data, item_categories, how='left', on="item_id")
 data.index = save_index
 
 # ????? Does this make sense?
-data.drop(columns=["item_id"], inplace=True)
-
-print(data.dtypes)
+#data.drop(columns=["item_id"], inplace=True)
 
 # Get the city names!
 shops = pd.read_parquet("data/shops.parquet")
@@ -62,28 +61,30 @@ data["item_id"] = data.index.get_level_values("item_id").astype(np.int32)
 
 # Step 4: Mean encoding
 # Date
-data["mean_enc_month_lag_1"] = data.groupby(level=["date_block_num"])["item_cnt_day_sum"].shift(1)
-data["mean_enc_month_lag_2"] = data.groupby(level=["date_block_num"])["item_cnt_day_sum"].shift(2)
+data = create_mean_encoded_feature(df=data, vars_to_group=["date_block_num"], lags_to_create=[1, 2])
 
 # Date vs. item
-data["mean_enc_month_vs_item_lag_1"] = data.groupby(level=["date_block_num", "item_id"])["item_cnt_day_sum"].shift(1)
-data["mean_enc_month_vs_item_lag_2"] = data.groupby(level=["date_block_num", "item_id"])["item_cnt_day_sum"].shift(2)
+data = create_mean_encoded_feature(df=data, vars_to_group=["date_block_num", "item_id"], lags_to_create=[1, 2])
 
 # Date vs. shop
-data["mean_enc_month_vs_shop_lag_1"] = data.groupby(level=["date_block_num", "shop_id"])["item_cnt_day_sum"].shift(1)
-data["mean_enc_month_vs_shop_lag_2"] = data.groupby(level=["date_block_num", "shop_id"])["item_cnt_day_sum"].shift(2)
+data = create_mean_encoded_feature(df=data, vars_to_group=["date_block_num", "shop_id"], lags_to_create=[1, 2])
 
 # Date vs. category
-data["mean_enc_month_vs_cat_lag_1"] = data.groupby(level=[['date_block_num', 'item_category_id']])["item_cnt_day_sum"].shift(1)
-data["mean_enc_month_vs_cat_lag_2"] = data.groupby(level=[['date_block_num', 'item_category_id']])["item_cnt_day_sum"].shift(1)
+data = create_mean_encoded_feature(df=data, vars_to_group=['date_block_num', 'item_category_id'], lags_to_create=[1, 2])
 
 # Date vs. Category vs item
-data["mean_enc_month_vs_shop_vs_cat_lag_1"] = data.groupby(level=['date_block_num', 'shop_id', 'item_category_id'])["item_cnt_day_sum"].shift(1)
-data["mean_enc_month_vs_shop_vs_cat_lag_2"] = data.groupby(level=['date_block_num', 'shop_id', 'item_category_id'])["item_cnt_day_sum"].shift(2)
+data = create_mean_encoded_feature(df=data, vars_to_group=['date_block_num', 'shop_id', 'item_category_id'], lags_to_create=[1, 2])
 
 # Date vs. City vs. Item
-data["mean_enc_month_vs_item_vs_city_lag_1"] = data.groupby(level=['date_block_num', 'item_id', 'city_code'])["item_cnt_day_sum"].shift(1)
-data["mean_enc_month_vs_item_vs_city_lag_2"] = data.groupby(level=['date_block_num', 'item_id', 'city_code'])["item_cnt_day_sum"].shift(2)
+data = create_mean_encoded_feature(df=data, vars_to_group=['date_block_num', 'item_id', 'city_code'], lags_to_create=[1, 2])
+
+# Step 5: temporal features:
+matrix['month'] = matrix['date_block_num'] % 12
+
+days = pd.Series([31,28,31,30,31,30,31,31,30,31,30,31])
+matrix['days'] = matrix['month'].map(days).astype(np.int8)
+
+print(data.dtypes)
 
 # Store dataset
 data.to_parquet("data/data.parquet")
