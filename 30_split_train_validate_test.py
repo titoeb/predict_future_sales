@@ -1,19 +1,24 @@
 import pandas as pd
 import numpy as np
 
-train_start = 2
-train_end = 31
+train_start = 5
+train_end = 32
 
-val_start = 31
-val_end = 32
+val_start = 33
+val_end = 33
 
-test_start = 33 
+test_start = 34
 test_end  = 34
 
 
 # Load data
 data = pd.read_parquet("data/data.parquet")
 
+print(data.dtypes)
+
+#select_columns= ["item_cnt_day_sum", "item_cnt_day_sum_lag_1", "item_cnt_day_sum_lag_2", "target"]
+
+#data = data.loc[:, select_columns]
 
 # Split train and test based on time.
 train = data.loc[(data.index.get_level_values("date_block_num") <= train_end) & (data.index.get_level_values("date_block_num") >= train_start) , :]

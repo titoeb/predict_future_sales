@@ -33,6 +33,9 @@ def create_lag_feature(df: pd.DataFrame, column2lag: str, lags_to_create: List[i
         df = pd.merge(df, rel_data, how="left", on=['date_block_num','shop_id','item_id'])
 
         # Finally fill missing values with 0.0
-        df.loc[:, f"{column2lag}_lag_{lag}"] = df.loc[:, f"{column2lag}_lag_{lag}"].fillna(0.0)
+        if col_name is None:
+            df.loc[:, f"{column2lag}_lag_{lag}"] = df.loc[:, f"{column2lag}_lag_{lag}"].fillna(0.0)
+        else:
+            df.loc[:, col_name] = df.loc[:, col_name].fillna(0.0)
 
     return df
