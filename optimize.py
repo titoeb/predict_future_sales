@@ -54,6 +54,6 @@ def score(params):
 trials = Trials()
 best = fmin(score, space, algo=tpe.suggest, 
                 trials=trials, 
-                max_evals=1)
+                max_evals=150)
 
-pickle.dump(trials, open("data/trials.p", "wb"))
+pickle.dump(trials, open("data/trials_2.p", "wb"))

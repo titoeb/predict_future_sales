@@ -13,18 +13,13 @@ X_train = np.load("data/X_train.npy")
 print(X_train.dtype)
 
 X_pre_val = np.load("data/X_pre_val.npy")
-print(X_pre_val.dtype)
+print(X_val.dtype)
 
 y_pre_val = np.load("data/y_pre_val.npy")
-print(y_pre_val.dtype)
+print(y_val.dtype)
 
-print(f"X_train.shape: {X_train.shape}, X_pre_val.shape: {X_pre_val.shape}")
-
-X_train = np.concatenate([X_train, X_pre_val], axis=0)
-print(f"combined: X_train.shape: {X_train.shape}")
-
-y_train = np.concatenate([y_train, y_pre_val], axis=0)
-print(f" combined t_train.shape: {y_train.shape}")
+X_train = np.stack([X_train, X_pre_val])
+y_train = np.stack([y_train, y_pre_val])
 
 
 X_val = np.load("data/X_val.npy")
