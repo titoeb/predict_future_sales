@@ -2,7 +2,7 @@ import numpy as np
 from xgboost import XGBRegressor
 
 
-params = {}
+params = {'colsample_bytree': 0.5, 'eta': 0.025, 'gamma': 0.9, 'max_depth': 11, 'min_child_weight': 5.0, 'subsample': 1.0,  'seed': 1993}
 
 xgb = XGBRegressor(n_estimators=1000, **params)
 
@@ -33,7 +33,7 @@ print(X_val.dtype)
 y_val = np.load("data/y_val.npy")
 print(y_val.dtype)
 
-xgb.fit(X_train, y_train, eval_metric="rmse", eval_set=[(X_train, y_train), (X_val, y_val)], verbose=True, early_stopping_rounds=3)
+xgb.fit(X_train, y_train, eval_metric="rmse", eval_set=[(X_train, y_train), (X_val, y_val)], verbose=True, early_stopping_rounds=10)
 
 predictions_y_train = np.clip(xgb.predict(X_train), 0, 20)
 
